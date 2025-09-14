@@ -63,7 +63,7 @@ export async function searchUsers(q, opts = {}) {
   // Try backend first
   try {
     // Adjust endpoint path if your backend differs
-    const res = await api.get('/api/users/search', { params: { q, limit } })
+    const res = await api.get('/api/v1/users/search', { params: { q, limit } })
 
     // If backend returns expected shape, return it
     if (res && res.data) {

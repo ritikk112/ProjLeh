@@ -1,7 +1,7 @@
 FROM node:18-alpine AS build
 
 # Build args (set when running `docker build --build-arg ...`)
-ARG VITE_API_URL=""
+ARG VITE_API_URL="http://localhost:8000"
 ARG NODE_ENV=production
 
 # Make sure Vite picks up VITE_* env vars at build time

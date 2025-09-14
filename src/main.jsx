@@ -4,6 +4,7 @@ import { BrowserRouter } from 'react-router-dom'
 import App from './App'
 import './index.css'
 
+
 // React 18 entry point
 const root = document.getElementById('root')
 
