@@ -1,4 +1,3 @@
-// src/components/molecules/SortFilterBar.jsx
 import React from 'react'
 
 export default function SortFilterBar({
@@ -6,6 +5,8 @@ export default function SortFilterBar({
   currentSort,
   onSortChange,
   onFilterChange,
+  gridCols = 2,
+  onGridColsChange = () => {},
 }) {
   function toggleRole(role) {
     onFilterChange((prev) => {
@@ -15,9 +16,17 @@ export default function SortFilterBar({
     })
   }
 
+  // small helper labels for select
+  const gridOptions = [
+    { value: 1, label: '1 column' },
+    { value: 2, label: '2 columns (2×2)' },
+    { value: 3, label: '3 columns' },
+    { value: 4, label: '4 columns' },
+  ]
+
   return (
     <div className="flex flex-col md:flex-row items-start md:items-center gap-4 justify-between">
-      {/* Sorting */}
+      {/* Left: Sorting and Grid dimension */}
       <div className="flex items-center gap-3">
         <label className="text-sm mr-2">Sort by:</label>
         <select
@@ -28,9 +37,26 @@ export default function SortFilterBar({
           <option value="age_asc">Age: Low → High</option>
           <option value="age_desc">Age: High → Low</option>
         </select>
+
+        {/* Grid dimension control */}
+        <div className="ml-3 flex items-center gap-2">
+          <label className="text-sm mr-1">Grid:</label>
+          <select
+            value={gridCols}
+            onChange={(e) => onGridColsChange(Number(e.target.value))}
+            className="px-2 py-1 border rounded text-sm"
+            aria-label="Grid columns"
+          >
+            {gridOptions.map((opt) => (
+              <option key={opt.value} value={opt.value}>
+                {opt.label}
+              </option>
+            ))}
+          </select>
+        </div>
       </div>
 
-      {/* Filtering */}
+      {/* Right: Filtering */}
       <div className="flex items-center gap-3 flex-wrap">
         <div className="text-sm">Filter by role:</div>
         {roles.length === 0 && (

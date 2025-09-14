@@ -1,14 +1,22 @@
-// src/components/organisms/UsersGrid.jsx
 import React from 'react'
 
-export default function UsersGrid({ users }) {
+export default function UsersGrid({ users, cols = 2 }) {
   if (!users) return null
   if (users.length === 0) {
     return <div className="p-6 text-slate-600">No users found</div>
   }
 
+  // clamp cols to sensible range
+  const c = Math.min(Math.max(Number(cols) || 1, 1), 6)
+
+  const gridStyle = {
+    display: 'grid',
+    gap: '1rem',
+    gridTemplateColumns: `repeat(${c}, minmax(0, 1fr))`,
+  }
+
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+    <div style={gridStyle}>
       {users.map((u) => (
         <article
           key={u.id}

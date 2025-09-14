@@ -24,6 +24,9 @@ export default function Users() {
   // Note: SortFilterBar expects onFilterChange to be the state setter (it calls with updater)
   const [roleFilter, setRoleFilter] = useState([])
 
+  // --- NEW: grid columns state (default 2 to get a 2x2 layout on typical screens) ---
+  const [gridCols, setGridCols] = useState(2)
+
   // Fetch from API (or mock) when query changes and length >= 3
   useEffect(() => {
     let mounted = true
@@ -94,13 +97,17 @@ export default function Users() {
           currentSort={sortOrder}
           onSortChange={setSortOrder}
           onFilterChange={setRoleFilter} // pass setter so component can use updater form
+          gridCols={gridCols}
+          onGridColsChange={setGridCols}
         />
       </div>
 
       {loading && <div className="p-6">Loading results...</div>}
       {error && <div className="p-6 text-red-600">{error}</div>}
 
-      {!loading && !error && <UsersGrid users={displayed} />}
+      {!loading && !error && (
+        <UsersGrid users={displayed} cols={gridCols} />
+      )}
     </div>
   )
 }
