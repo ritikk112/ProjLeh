@@ -1,0 +1,56 @@
+# docker-compose.yml
+version: "3.8"
+
+services:
+  backend:
+    # Build the backend from the sibling directory
+    build:
+      context: ./users-search-backend
+      dockerfile: Dockerfile
+    container_name: users-backend
+    ports:
+      - "8000:8000"                # expose to host for direct API access
+    expose:
+      - "8000"                     # expose to network (not published to host)
+    environment:
+      - PYTHONUNBUFFERED=1
+      - DATABASE_URL=sqlite:///./data/users.db
+    volumes:
+      - ./users-search-backend/data:/app/data   # persist sqlite data (optional)
+    networks:
+      - app-network
+
+  frontend:
+    # Build the frontend from the sibling directory
+    build:
+      context: ./users-search-frontend
+      dockerfile: Dockerfile
+      args:
+        # IMPORTANT: Frontend will call `${VITE_API_URL}/api/...`.
+        # We set it to localhost where the proxy is accessible from browser.
+        VITE_API_URL: "http://localhost:5174"
+        NODE_ENV: "production"
+    container_name: users-frontend
+    expose:
+      - "80"
+    networks:
+      - app-network
+    depends_on:
+      - backend
+
+  proxy:
+    image: nginx:stable-alpine
+    container_name: users-proxy
+    ports:
+      - "5174:80"    # map host:5174 -> proxy:80 (avoid conflict with port 5173)
+    volumes:
+      - ./proxy/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    depends_on:
+      - frontend
+      - backend
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
