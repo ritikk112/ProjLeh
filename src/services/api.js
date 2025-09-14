@@ -43,6 +43,25 @@ async function mockSearch(q, { limit = 50 } = {}) {
 }
 
 /**
+ * loadUsers - POST request to load users into memory
+ * @returns {Promise<void>}
+ */
+export async function loadUsers() {
+  if (!api) {
+    console.log('[api] No backend configured, skipping load request')
+    return
+  }
+
+  try {
+    await api.post('/api/v1/users/load', {})
+    console.log('[api] Users loaded into memory successfully')
+  } catch (err) {
+    console.error('[api] Failed to load users into memory:', err?.message || err)
+    throw err
+  }
+}
+
+/**
  * searchUsers - primary entry
  * @param {string} q - query string (min 3 chars recommended)
  * @param {object} opts - { limit: number }
@@ -97,4 +116,5 @@ export async function searchUsers(q, opts = {}) {
 // default export for convenience if needed
 export default {
   searchUsers,
+  loadUsers,
 }
